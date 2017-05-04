@@ -81,6 +81,40 @@ namespace SteamPunkGame
 			base.Update(gameTime);
 		}
 
+		private void UpdatePlayer(GameTime gameTime)
+		{
+
+			// Get Thumbstick Controls
+			player.Position.X += currentGamePadState.ThumbSticks.Left.X * playerMoveSpeed;
+			player.Position.Y -= currentGamePadState.ThumbSticks.Left.Y * playerMoveSpeed;
+
+			// Use the Keyboard / Dpad
+			if (currentKeyboardState.IsKeyDown(Keys.Left) ||
+			currentGamePadState.DPad.Left == ButtonState.Pressed)
+			{
+				player.Position.X -= playerMoveSpeed;
+			}
+			if (currentKeyboardState.IsKeyDown(Keys.Right) ||
+			currentGamePadState.DPad.Right == ButtonState.Pressed)
+			{
+				player.Position.X += playerMoveSpeed;
+			}
+			if (currentKeyboardState.IsKeyDown(Keys.Up) ||
+			currentGamePadState.DPad.Up == ButtonState.Pressed)
+			{
+				player.Position.Y -= playerMoveSpeed;
+			}
+			if (currentKeyboardState.IsKeyDown(Keys.Down) ||
+			currentGamePadState.DPad.Down == ButtonState.Pressed)
+			{
+				player.Position.Y += playerMoveSpeed;
+			}
+
+	// Make sure that the player does not go out of bounds
+	player.Position.X = MathHelper.Clamp(player.Position.X, 0, GraphicsDevice.Viewport.Width - player.Width);
+	player.Position.Y = MathHelper.Clamp(player.Position.Y, 0, GraphicsDevice.Viewport.Height - player.Height);
+}
+
 		/// <summary>
 		/// This is called when the game should draw itself.
 		/// </summary>

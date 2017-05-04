@@ -22,16 +22,16 @@ namespace SteamPunkGame.Model
 		private bool active;
 		public bool Active
 		{
-			get { return Active;}
-			set { Active = value;}
+			get { return active;}
+			set { active = value;}
 		}
 
 		// Amount of hit points that player has
 		private int health;
 		public int Health
 		{
-			get { return Health;}
-			set { Health = value;}
+			get { return health;}
+			set { health = value;}
 		}
 
 		// Get the width of the player ship
