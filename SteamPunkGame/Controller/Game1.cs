@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SteamPunkGame.Model;
+using Microsoft.Xna.Framework.Input.Touch;
 
 namespace SteamPunkGame
 {
@@ -16,7 +17,7 @@ namespace SteamPunkGame
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
 
-		private Player player; 
+		Player player; 
 
 		// Keyboard states used to determine key presses
 		KeyboardState currentKeyboardState;
@@ -26,10 +27,11 @@ namespace SteamPunkGame
 		GamePadState currentGamePadState;
 		GamePadState previousGamePadState;
 
+		float playerMoveSpeed;
+
 		#endregion
 
 		// A movement speed for the player
-		float playerMoveSpeed;
 
 		public Game1()
 		{
@@ -46,8 +48,10 @@ namespace SteamPunkGame
 		protected override void Initialize()
 		{
 			// TODO: Add your initialization logic here
-
+			player = new Player();
 			base.Initialize();
+			playerMoveSpeed = 8.0f;
+			TouchPanel.EnabledGestures = GestureType.FreeDrag;
 		}
 
 		/// <summary>
@@ -58,7 +62,13 @@ namespace SteamPunkGame
 		{
 			// Create a new SpriteBatch, which can be used to draw textures.
 			spriteBatch = new SpriteBatch(GraphicsDevice);
+			Vector2 playerPosition = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
+			// Load the player resources
+			Animation playerAnimation = new Animation();
+			Texture2D playerTexture = Content.Load<Texture2D>("Animation/shipAnimation");
+			playerAnimation.Initialize(playerTexture, Vector2.Zero, 115, 69, 8, 30, Color.White, 1f, true);
 
+			player.Initialize(playerAnimation, playerPosition);
 			//TODO: use this.Content to load your game content here 
 		}
 
@@ -76,7 +86,18 @@ namespace SteamPunkGame
 				Exit();
 #endif
 
-			// TODO: Add your update logic here
+			// Save the previous state of the keyboard and game pad so we can determinesingle key/button presses
+			previousGamePadState = currentGamePadState;
+			previousKeyboardState = currentKeyboardState;
+
+			// Read the current state of the keyboard and gamepad and store it
+			currentKeyboardState = Keyboard.GetState();
+			currentGamePadState = GamePad.GetState(PlayerIndex.One);
+
+
+			//Update the player
+			UpdatePlayer(gameTime);
+			player.Update(gameTime);
 
 			base.Update(gameTime);
 		}
